@@ -28,7 +28,7 @@ var procLine = function(lines){
     if ( ob===null ){
       console.log("No invoice num in html:", invNum);
       var fn = invNum;
-      return u2p.renderPdf(url,{id: fn, saveDir:"./matches"})
+      return u2p.renderPdf(url,{id: fn, saveDir:"./data/matches"})
       .then(function(path){ 
         console.log(path);
         return procLine(lines);
@@ -67,7 +67,7 @@ var procLine = function(lines){
       var fn = invNum;
     }
 
-    return u2p.renderPdf(url,{id: fn, saveDir:"./matches"})
+    return u2p.renderPdf(url,{id: fn, saveDir:"./data/matches"})
     .then(function(path){ 
       console.log(path);
       return procLine(lines);
@@ -84,18 +84,19 @@ var procLine = function(lines){
   });
 };
 var analyze = function(){
-  fs.writeFile("./mismatches.xls",mismatchFile.join("\n"),function(err){
+  fs.writeFile("./data/mismatches.xls",mismatchFile.join("\n"),function(err){
     if ( err) { console.error("Failed writing mismatch file"); }
     else console.log('wrote mismatch file');
   });
 }
 
-fs.readFile("./data.xls",function(err,data){
+fs.readFile("./data/ref.txt",function(err,data){
   //console.log(err,data.toString());
   var lines = data.toString().split(/\n/g);
 
   lines.pop();
   lines.reverse();
+  /*
   lines.forEach(function(line,idx){
     if (line.split(" ").pop()==="64757"){
       mark = idx;
@@ -103,11 +104,10 @@ fs.readFile("./data.xls",function(err,data){
   });
   console.log("mark:",mark);
   lines.splice(mark+10);
-  /*
   console.log(lines.length + " lines");
   console.log(lines[ lines.length-1 ]);
   console.log(lines[ lines.length-2 ]);
-  */
   lines = ["http://winwinproducts.com/all/pod_1Z44V1400352950854.htm 74814"];
+  */
   procLine(lines);
 });

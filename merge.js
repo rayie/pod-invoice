@@ -8,7 +8,7 @@ var hummus = require('hummus');
 function m(num, pathToInv, pathToPOD){
   return new Promise(function(resolve,reject){
     var name = num+"-with-pod.pdf";
-    var P = hummus.createWriter("./done/"+name);
+    var P = hummus.createWriter("./data/done/"+name);
 
     console.log("merging ", pathToInv, pathToPOD);
 
@@ -19,7 +19,7 @@ function m(num, pathToInv, pathToPOD){
     P.mergePDFPagesToPage(page2,pathToPOD);
     P.writePage(page1).writePage(page2).end();
 
-    return fs.rename(pathToPOD,"./podsDone/"+num,function(err){
+    return fs.rename(pathToPOD,"./data/podsDone/"+num,function(err){
 
       console.log(err);
       return resolve();
@@ -35,15 +35,15 @@ function f(list){
   var num = n.split(".")[0];
 
   try {
-    var pathToInv = "./invpdfs/"+n;
-    var pathToPOD = "./matches/"+n;
+    var pathToInv = "./data/invpdfs/"+n;
+    var pathToPOD = "./data/matches/"+n;
     var a = fs.accessSync(pathToInv);
     console.log(a);
     console.log(num,pathToInv,pathToPOD);
   }
   catch(err){
     console.log(err);
-    return fs.rename(pathToPOD,"./missingInv/"+n,function(err){
+    return fs.rename(pathToPOD,"./data/missingInv/"+n,function(err){
       console.log(err);
       return f(list);
     });
@@ -57,7 +57,7 @@ function f(list){
 }
 
 
-fs.readdir("./matches",function(err,list){
+fs.readdir("./data/matches",function(err,list){
   list.reverse();
   console.log(list);
   f(list);
