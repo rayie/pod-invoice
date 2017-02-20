@@ -16,10 +16,15 @@ var procLine = function(lines){
   var line = lines.pop();
   //console.log(line);
   var parts = line.split(/ /);
-  var url = parts[0].trim();
-  var invNum = parts[1].trim();
-  //console.log(url, invNum);
+  var url = parts[1].trim();
+  var invNum = parts[0].trim();
+  console.log(url, invNum);
   needle.get(url, function(err, res){
+    if (err){
+      console.log("error fetching pod :", invNum, err);
+      var fn = invNum;
+      return procLine(lines);
+    }
     //console.log(res.body.toString());
     var html = res.body.toString()
     sheetNumbers.push(invNum);
@@ -70,7 +75,7 @@ var procLine = function(lines){
     return u2p.renderPdf(url,{id: fn, saveDir:"./data/matches"})
     .then(function(path){ 
       console.log(path);
-      return procLine(lines);
+      return setTimeout( function() { procLine(lines); }, 3000 );
     });
     
     /*
@@ -96,14 +101,19 @@ fs.readFile("./data/ref.txt",function(err,data){
 
   lines.pop();
   lines.reverse();
+  if ( process.argv.length === 3 ){
+    var startAt = process.argv[2]
+    lines.forEach(function(line,idx){
+      console.log(line);
+      if (line.split(" ")[0]===startAt){
+        console.log("Marked " + startAt + " at index:" + idx);
+        mark = idx;
+      }
+    });
+    console.log("mark:",mark);
+    lines.splice(mark+3);
+  }
   /*
-  lines.forEach(function(line,idx){
-    if (line.split(" ").pop()==="64757"){
-      mark = idx;
-    }
-  });
-  console.log("mark:",mark);
-  lines.splice(mark+10);
   console.log(lines.length + " lines");
   console.log(lines[ lines.length-1 ]);
   console.log(lines[ lines.length-2 ]);
