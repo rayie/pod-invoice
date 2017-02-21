@@ -86,9 +86,9 @@ var F = function(){
     var url = "http://localhost:3000/inv/" + num;
 		console.log(url);
     u2p.renderPdf( url, {
-      id: num+"_inv",
-      //saveDir: "/var/www/pod-invoice/data/generatedinv"
-      saveDir: "/var/www/pod-invoice/public/invs"
+      filename: num+"_inv.pdf",
+      saveDir: "/var/www/pod-invoice/data/generatedinv"
+      //saveDir: "/var/www/pod-invoice/public/invs"
     })
     .then(function(path){
       //console.log(path);
