@@ -25,7 +25,7 @@ var F = function(){
     }); 
   };
 
-  this.rules = function(dbconn){
+  this.tsv_to_db = function(dbconn){
     read("/Volumes/DataDrive/yung-invoice/data/sample_invoice_file.tsv")
     .then(function(raw){
       var rows = raw.toString().split(/\n/g);
@@ -57,7 +57,7 @@ var F = function(){
         return lineObject;
       })
 
-      return dbconn.collection("winwin_inv").insertMany(lines)
+      return self.dbconn.collection("winwin_inv").insertMany(lines)
     })
     .then(function(insertResult){
       //console.log(insertResult);
