@@ -1,123 +1,78 @@
-var htop = require("html-pdf");
-var fs = require('fs');
-var needle = require('needle');
-var u2p = require('url2pdf');
-var _ = require('lodash');
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
-var sheetNumbers = [];
-var mismatchSheet = [];
-var mismatchContent = [];
-var mismatchFile = [];
+var index = require('./routes/index');
+var users = require('./routes/users');
 
-var procLine = function(lines){
-  if ( lines.length===0 ) {
-    return analyze();
-  }
-  var line = lines.pop();
-  //console.log(line);
-  var parts = line.split(/ /);
-  var url = parts[1].trim();
-  var invNum = parts[0].trim();
-  console.log(url, invNum);
-  needle.get(url, function(err, res){
-    if (err){
-      console.log("error fetching pod :", invNum, err);
-      var fn = invNum;
-      return procLine(lines);
-    }
-    //console.log(res.body.toString());
-    var html = res.body.toString()
-    sheetNumbers.push(invNum);
+const MongoDB = require("mongodb");
+const MC = MongoDB.MongoClient;
+const _ = require('lodash');
 
-    var ob = html.match(/INV#[0-9]*,/g);
-    if ( ob===null ){
-      console.log("No invoice num in html:", invNum);
-      var fn = invNum;
-      return u2p.renderPdf(url,{id: fn, saveDir:"./data/matches"})
-      .then(function(path){ 
-        console.log(path);
-        return procLine(lines);
-      });
-    
-      /*
-      return htop.create( html ).toFile("./notInHTML/"+invNum+".pdf", function(err,fileRes){
-        console.log(fileRes);
-        return procLine(lines);
-      });
-      */
-    }
-
-
-
-    //console.log(ob);
-    var invs = [];
-    ob.forEach(function(p){
-      //console.log(p);//.input.substr(1142,10));
-      invs.push( p.replace(/,/g,"") );
-    });
-    invs = _.uniq(invs);
-    if ( invs.length > 1 ) { 
-      console.log("\n****WARN - multiple numbers referenced***", invs);
-
-    }
-    if (invs[0] !== "INV#"+invNum){
-      console.log("Mismatch: " + invNum + " vs: " + invs[0]);
-      mismatchSheet.push( invNum );
-      mismatchContent.push( invs[0].substr(4) );
-      mismatchFile.push( [ invNum, invs[0].substr(4) ].join(",") );
-      var fn = "Actual-"+invs.join(",").replace(/INV#/g,"") + "-vs-Sheet-"+invNum;
-    }
-    else {
-      console.log("MATCH: " + invNum + " === " + invs[0]);
-      var fn = invNum;
-    }
-
-    return u2p.renderPdf(url,{id: fn, saveDir:"./data/matches"})
-    .then(function(path){ 
-      console.log(path);
-      return setTimeout( function() { procLine(lines); }, 3000 );
-    });
-    
-    /*
-    return htop.create( html ).toFile("./mismatched/"+invNum+"-"+invs[0].substr(4)+".pdf", function(err,fileRes){
+var F = function(){
+  this.init = function(){
+    var self = this;
+    var dburl = process.env.WINWIN_CONN;
+    console.log(dburl);
+    var ccdb_at = dburl.split(/@/).pop();
+    console.log("attempting connection to " + ccdb_at);
+		return MC.connect(dburl)
+		.then(function(dbconn){
+      app.dbconn = dbconn; 
+      return;
+    })
+    .catch(function(err){
       console.log(err);
-      console.log(fileRes);
-      return procLine(lines);
-    });
-    */
+    }); 
+  };
+  this.mw = function(req,res,next){
+    req.db = app.dbconn.collection("winwin_inv");;
+    console.log('attached db to req');
+    return next();
+  }
 
-  });
-};
-var analyze = function(){
-  fs.writeFile("./data/mismatches.xls",mismatchFile.join("\n"),function(err){
-    if ( err) { console.error("Failed writing mismatch file"); }
-    else console.log('wrote mismatch file');
-  });
 }
 
-fs.readFile("./data/ref.txt",function(err,data){
-  //console.log(err,data.toString());
-  var lines = data.toString().split(/\n/g);
 
-  lines.pop();
-  lines.reverse();
-  if ( process.argv.length === 3 ){
-    var startAt = process.argv[2]
-    lines.forEach(function(line,idx){
-      console.log(line);
-      if (line.split(" ")[0]===startAt){
-        console.log("Marked " + startAt + " at index:" + idx);
-        mark = idx;
-      }
-    });
-    console.log("mark:",mark);
-    lines.splice(mark+3);
-  }
-  /*
-  console.log(lines.length + " lines");
-  console.log(lines[ lines.length-1 ]);
-  console.log(lines[ lines.length-2 ]);
-  lines = ["http://winwinproducts.com/all/pod_1Z44V1400352950854.htm 74814"];
-  */
-  procLine(lines);
+
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+var f = new F();
+f.init();
+app.use(f.mw);
+app.use('/', index);
+app.use('/users', users);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;

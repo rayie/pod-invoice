@@ -1,0 +1,117 @@
+extends layout
+block content
+  .left
+    h1 WIN WIN PRODUCTS
+    .clr
+    .hdr
+      strong CONTACT: YUNG, PAUL, BEN, WALTER, MELISSA, BEKAY
+      .addr1 11410 GRISSOM LANE
+      .city DALLAS, TX 75229
+      .tel TEL. 469-733-5867 FAX. 214-358-2302
+      .email E-mail: info@winwinproducts.com 
+
+  .right
+    h1(style="text-align:right") INVOICE ##{num}
+    .clr
+    table.date.right
+      tr
+        th DATE
+        th INVOICE#
+      tr
+        td 
+          strong #{date}
+        td.rt
+          strong #{num}
+      tr
+        th OZLINK
+        th SHIPPED
+  
+  .clr
+  hr
+  .left
+    .billto
+      h3 BILL TO
+      .source_name #{source_name}
+      .name_street1 #{name_street1}
+      .name_street2 #{name_street2}
+      .name_city #{name_city}, #{name_state} #{name_zip}
+      .name_phone #{name_phone}
+
+  .right
+    .shipto
+      h3 SHIP TO
+      .source_name #{source_name}
+      .name_street1 #{name_street1}
+      .name_street2 #{name_street2}
+      .name_city #{name_city}, #{name_state} #{name_zip}
+      .name_phone #{name_phone}
+
+
+  .clr
+  table.terms
+    thead
+      tr.terms
+        th VIA
+        th F.O.B
+        th TERMS
+        th DUE DATE
+        th P.O.#/Ordered By
+        th VENDOR CONTACT
+      tr
+        td #{via}
+        td #{fob}
+        td #{terms}
+        td #{due_date} 
+        td #{poNumber}
+        td #{rep}
+
+  table.inv
+    thead 
+      tr
+        th.idx Line
+        th.lt.item UPC (ITEM #) / DESCRIPTION
+        th.rt.qty QTY
+        th.rt.unit UNIT
+        th.rt.price PRICE/UNIT
+        th.rt.amount AMOUNT
+      tr
+        td(colspan=6).shade.ct
+          strong(style='font-size:11px') *ENTER ONLY 11 DIGITS OF UPC FOR RECEIVING. LEAVE OUT LAST CHECK DIGIT. PLEASE SUBMIT INVOICE COPY FOR PAYMENT PROCESSING.* 
+
+
+    tbody
+      each row,idx in lines
+        tr
+          td.ct.idx #{(idx+1)}
+          td.lt.item #{row.memo} 
+          td.rt #{row.qty}
+          td.rt #{row.um}
+          td.rt #{row.sales_price.toFixed(2)}
+          td.rt #{row.amount.toFixed(2)}
+
+      tr(style="height: 20px")
+        td.ct.idx 
+        td.lt.item 
+        td.rt 
+        td.rt
+        td.rt
+        td.rt
+
+      tr
+        td(colspan=2)
+          strong(style='font-size:11px') PLEASE SCAN OR ENTER PRODUCT UPC'S FOR RECEIVING.  YOUR TIMELY PAYMENT OF INVOICE IS GREATLY APPRECIATED.  THANK YOU!
+        td(colspan=3)
+          h4(style="margin: 4px 2px;") SUBTOTAL
+        td.rt
+          .subtotal #{subtotal.toFixed(2)}
+
+      tr
+        td(colspan=2)
+        td(colspan=3)
+          h3(style="margin: 4px 2px;") TOTAL DUE
+        td.rt
+          .subtotal #{subtotal.toFixed(2)}
+
+  .note.shade
+    p NOTE: ANY DAMAGE MUST BE REPORTED TO US WITHIN 10 DAYS AFTER RECEIPT OF MERCHANDISE, OR NO CREDIT ALLOWED. ANY DAMAGED RACKS AFTER THE 10 DAYS CAN BE REPLACED AT COST. *** PLEASE PROCESS THIS INVOICE TO ENSURE TIMELY PAYMENT. ALL LATE PAYMENTS AFTER 30 DAYS PAST DUE WILL BE CHARGED 0.5% PER MONTH OR 6% PER YEAR.***
+

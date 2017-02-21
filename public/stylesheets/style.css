@@ -1,0 +1,106 @@
+html {
+  zoom: .65 
+  /*workaround for phantomJS2 rendering pages too large*/
+}
+
+body {
+  padding: 12px;
+  margin: 12px;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  width: 784px;
+  height: 1112px;
+}
+
+
+
+a {
+  color: #00B7FF;
+}
+
+.hdr {
+  width: 300px;
+}
+
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+
+.clr { clear:both }
+
+.billto ,
+.shipto {
+  padding: 8px;
+  width: 320px;
+  border: 1px solid #E0E0E0;
+  font-size:  14px;
+}
+.billto h3 ,
+.shipto h3 {
+  margin: 2px;
+}
+
+table {
+   border-collapse: collapse;
+}
+table.date , 
+table.date th,
+table.date td
+{
+  width: 160px;
+  border: 1px solid #E0E0E0;
+  padding: 6px;
+}
+
+table.date td {
+  padding: 8px;
+}
+
+table.terms ,
+table.inv {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 22px;
+  margin-bottom: 32px;
+}
+
+
+table.terms th ,
+table.terms td 
+{
+  text-align: center;
+  border: 1px solid #E0E0E0;
+  margin:0
+}
+
+table.inv th ,
+table.inv td 
+{
+  padding: 4px;
+  border: 1px solid #E0E0E0;
+}
+
+.note { padding: 8px; font-size: 14px; }
+.shade {
+  background-color: #E0E0E0;
+}
+
+th.ct { text-align:center;}
+th.rt { text-align:right ;}
+th.lt { text-align:left ; }
+
+td.ct { text-align:center;}
+td.rt { text-align:right ;}
+td.lt { text-align:left ; }
+
+th.idx { width: 5% },
+th.item { width: 54% },
+th.qty { width: 10% }
+th.unit { width: 10% }
+th.price { width: 10% }
+th.amount { width: 10% }
+
+td .subtotal {  }
+.note p { font-size: 10px; }
