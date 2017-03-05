@@ -69,7 +69,8 @@ var F = function(){
 
 		dbconn.collection("winwin_inv").aggregate([
 				{ $match: { rendered: {$ne: true}  } },
-				{ $group: {_id: "$num", n:{$sum:1}} }
+				{ $group: {_id: "$num", n:{$sum:1}} },
+				{ $sort: {"_id":1} }
 		]).toArray()
 		.then(self._iterate_invs)
     .catch(function(err){ console.log(err); })
@@ -85,8 +86,9 @@ var F = function(){
   this._to_pdf= function(num,rr){
     var url = "http://localhost:3000/inv/" + num;
 		console.log(url);
+    console.log("Saving to " + num+"_inv.pdf");
     u2p.renderPdf( url, {
-      filename: num+"_inv.pdf",
+      filename: num + "_inv.pdf",
       saveDir: "/var/www/pod-invoice/data/generatedinv"
       //saveDir: "/var/www/pod-invoice/public/invs"
     })
@@ -103,6 +105,17 @@ var F = function(){
 
   }
 
+  this.fonts_to_pdf = function(num,rr){
+    var url = "http://localhost:3000/fonts";
+    u2p.renderPdf( url, {
+      filename: "fontsamples.pdf",
+      saveDir: "/var/www/pod-invoice/data/generatedinv"
+      //saveDir: "/var/www/pod-invoice/public/invs"
+    })
+    .then(function(path){
+      process.exit(); 
+    })
+  },
 
   this.sample_to_pdf= function(){
     var url = "http://winwinproducts.com/all/pod_1Z44V1400352015776.htm";

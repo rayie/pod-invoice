@@ -7,6 +7,7 @@ var read = Promise.promisify( require("fs").readFile );
 
 function procInvoice(lines){
 	var hdr = lines[0];
+  hdr.tax = 0;
 	hdr.subtotal = lines.reduce(function(t,r){ return t+r.amount; },0)
 	hdr.lines = lines;
 	//console.log('hdr',hdr);
@@ -33,6 +34,19 @@ function byNum(req,num){
   .catch(function(err){ throw err; })
 }
 
+
+/* GET home page. */
+router.get('/fonts', function(req, res, next) {
+  console.log("got to /fonts route");
+  return absorb(req)
+  .then(function(inv){
+    //console.log(inv);
+    res.render('fonts');
+  })
+  .catch(function(err){
+    console.log(err);
+  })
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

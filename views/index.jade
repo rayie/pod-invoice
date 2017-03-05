@@ -1,6 +1,8 @@
 extends layout
 block content
   .left
+    image.logo(src="/images/logo.jpg")
+  .left(style="padding-left:88px")
     span(style="font-size:16px;font-weight:bold;text-align:right") WIN WIN PRODUCTS
     .clr
     .hdr
@@ -9,7 +11,6 @@ block content
       .city DALLAS, TX 75229
       .tel TEL. 469-733-5867 FAX. 214-358-2302
       .email E-mail: info@winwinproducts.com 
-
   .right
     span(style="font-size:14px;font-weight:bold;text-align:right") INVOICE ##{num}
     .clr
@@ -85,7 +86,7 @@ block content
           td.ct.idx #{(idx+1)}
           td.lt.item #{row.memo} 
           td.rt #{row.qty}
-          td.rt #{row.um}
+          td.rt #{row.u_m}
           td.rt #{row.sales_price.toFixed(2)}
           td.rt #{row.amount.toFixed(2)}
 
@@ -98,7 +99,7 @@ block content
         td.rt
 
       tr
-        td(colspan=2)
+        td(colspan=2,rowspan=3)
           strong(style='font-size:11px') PLEASE SCAN OR ENTER PRODUCT UPC'S FOR RECEIVING.  YOUR TIMELY PAYMENT OF INVOICE IS GREATLY APPRECIATED.  THANK YOU!
         td(colspan=3)
           h4(style="margin: 4px 2px;") SUBTOTAL
@@ -106,7 +107,12 @@ block content
           .subtotal #{subtotal.toFixed(2)}
 
       tr
-        td(colspan=2)
+        td(colspan=3)
+          h4(style="margin: 4px 2px;") TAX
+        td.rt
+          .subtotal #{tax.toFixed(2)}
+
+      tr
         td(colspan=3)
           h3(style="margin: 4px 2px;") TOTAL DUE
         td.rt

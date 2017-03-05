@@ -11,8 +11,6 @@ body {
   height: 1112px;
 }
 
-
-
 a {
   color: #00B7FF;
 }
@@ -28,6 +26,9 @@ a {
   float: right;
 }
 
+.logo {
+  width: 160px;
+}
 .clr { clear:both }
 
 .billto ,
@@ -43,7 +44,7 @@ a {
 }
 
 table {
-   border-collapse: collapse;
+  border-collapse: collapse;
 }
 table.date , 
 table.date th,
@@ -65,7 +66,6 @@ table.inv {
   margin-top: 22px;
   margin-bottom: 32px;
 }
-
 
 table.terms th ,
 table.terms td 
@@ -104,3 +104,13 @@ th.amount { width: 10% }
 
 td .subtotal {  }
 .note p { font-size: 10px; }
+
+.non-bolded div {
+  font-weight:normal;
+  margin-bottom:12px;
+}
+.bolded div {
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
