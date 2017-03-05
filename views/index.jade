@@ -1,7 +1,7 @@
 extends layout
 block content
   .left
-    h1 WIN WIN PRODUCTS
+    span(style="font-size:16px;font-weight:bold;text-align:right") WIN WIN PRODUCTS
     .clr
     .hdr
       strong CONTACT: YUNG, PAUL, BEN, WALTER, MELISSA, BEKAY
@@ -11,7 +11,7 @@ block content
       .email E-mail: info@winwinproducts.com 
 
   .right
-    h1(style="text-align:right") INVOICE ##{num}
+    span(style="font-size:14px;font-weight:bold;text-align:right") INVOICE ##{num}
     .clr
     table.date.right
       tr
@@ -55,7 +55,7 @@ block content
         th F.O.B
         th TERMS
         th DUE DATE
-        th P.O.#/Ordered By
+        th P.O.#/ORDERED BY 
         th VENDOR CONTACT
       tr
         td #{via}
