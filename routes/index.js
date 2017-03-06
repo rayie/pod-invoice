@@ -4,12 +4,25 @@ const _ = require("lodash");
 var Promise = require("bluebird");
 var read = Promise.promisify( require("fs").readFile );
 
+var toUSD = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+});
+
 
 function procInvoice(lines){
 	var hdr = lines[0];
-  hdr.tax = 0;
+  hdr.tax = "0.00";
+
 	hdr.subtotal = lines.reduce(function(t,r){ return t+r.amount; },0)
-	hdr.lines = lines;
+  hdr.subtotal = toUSD.format(hdr.subtotal);
+	hdr.lines = lines.map(function(r){
+    r.amount *= 100;
+    r.amount = toUSD.format(r.amount).replace(/\$/,"");
+    r.sales_price = toUSD.format(r.sales_price).replace(/\$/,"");
+    return r;
+  });
 	//console.log('hdr',hdr);
 	return hdr;
 }

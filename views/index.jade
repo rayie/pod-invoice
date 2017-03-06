@@ -1,9 +1,9 @@
 extends layout
 block content
   .left
-    image.logo(src="/images/logo.jpg")
-  .left(style="padding-left:88px")
-    span(style="font-size:16px;font-weight:bold;text-align:right") WIN WIN PRODUCTS
+    image.logo(src="/images/logo160w.png")
+  .left(style="padding-left:70px")
+    span(style="font-size:16px;font-weight:bold;text-align:right") WINWIN PRODUCTS
     .clr
     .hdr
       strong CONTACT: YUNG, PAUL, BEN, WALTER, MELISSA, BEKAY
@@ -11,27 +11,25 @@ block content
       .city DALLAS, TX 75229
       .tel TEL. 469-733-5867 FAX. 214-358-2302
       .email E-mail: info@winwinproducts.com 
-  .right
-    span(style="font-size:14px;font-weight:bold;text-align:right") INVOICE ##{num}
+  .right(style="width: 220px")
+    span.right(style="font-size:32px;font-weight:bold;text-align:right") INVOICE 
     .clr
     table.date.right
       tr
         th DATE
         th INVOICE#
       tr
-        td 
-          strong #{date}
-        td.rt
-          strong #{num}
+        td #{date}
+        td.rt #{num}
       tr
-        th OZLINK
-        th SHIPPED
+        td OZLINK
+        td SHIPPED
   
   .clr
   hr
   .left
     .billto
-      h3 BILL TO
+      strong BILL TO
       .source_name #{source_name}
       .name_street1 #{name_street1}
       .name_street2 #{name_street2}
@@ -40,7 +38,7 @@ block content
 
   .right
     .shipto
-      h3 SHIP TO
+      strong SHIP TO
       .source_name #{source_name}
       .name_street1 #{name_street1}
       .name_street2 #{name_street2}
@@ -76,8 +74,7 @@ block content
         th.rt.price PRICE/UNIT
         th.rt.amount AMOUNT
       tr
-        td(colspan=6).shade.ct
-          strong(style='font-size:11px') *ENTER ONLY 11 DIGITS OF UPC FOR RECEIVING. LEAVE OUT LAST CHECK DIGIT. PLEASE SUBMIT INVOICE COPY FOR PAYMENT PROCESSING.* 
+        td.ct.flush(colspan=6) *ENTER ONLY 11 DIGITS OF UPC FOR RECEIVING. LEAVE OUT LAST CHECK DIGIT. PLEASE SUBMIT INVOICE COPY FOR PAYMENT PROCESSING.* 
 
 
     tbody
@@ -87,8 +84,8 @@ block content
           td.lt.item #{row.memo} 
           td.rt #{row.qty}
           td.rt #{row.u_m}
-          td.rt #{row.sales_price.toFixed(2)}
-          td.rt #{row.amount.toFixed(2)}
+          td.rt #{row.sales_price}
+          td.rt #{row.amount}
 
       tr(style="height: 20px")
         td.ct.idx 
@@ -104,19 +101,19 @@ block content
         td(colspan=3)
           h4(style="margin: 4px 2px;") SUBTOTAL
         td.rt
-          .subtotal #{subtotal.toFixed(2)}
+          .subtotal #{subtotal}
 
       tr
         td(colspan=3)
           h4(style="margin: 4px 2px;") TAX
         td.rt
-          .subtotal #{tax.toFixed(2)}
+          .subtotal #{tax}
 
       tr
         td(colspan=3)
           h3(style="margin: 4px 2px;") TOTAL DUE
         td.rt
-          .subtotal #{subtotal.toFixed(2)}
+          .subtotal #{subtotal}
 
   .note.shade
     p NOTE: ANY DAMAGE MUST BE REPORTED TO US WITHIN 10 DAYS AFTER RECEIPT OF MERCHANDISE, OR NO CREDIT ALLOWED. ANY DAMAGED RACKS AFTER THE 10 DAYS CAN BE REPLACED AT COST. *** PLEASE PROCESS THIS INVOICE TO ENSURE TIMELY PAYMENT. ALL LATE PAYMENTS AFTER 30 DAYS PAST DUE WILL BE CHARGED 0.5% PER MONTH OR 6% PER YEAR.***

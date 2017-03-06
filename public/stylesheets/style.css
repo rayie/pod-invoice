@@ -85,6 +85,7 @@ table.inv td
 .note { padding: 8px; font-size: 14px; }
 .shade {
   background-color: #E0E0E0;
+  padding: 4px;
 }
 
 th.ct { text-align:center;}
@@ -96,7 +97,7 @@ td.rt { text-align:right ;}
 td.lt { text-align:left ; }
 
 th.idx { width: 5% },
-th.item { width: 54% },
+th.item { width: 54% }
 th.qty { width: 10% }
 th.unit { width: 10% }
 th.price { width: 10% }
@@ -104,6 +105,14 @@ th.amount { width: 10% }
 
 td .subtotal {  }
 .note p { font-size: 10px; }
+.flush { 
+  padding: 0;
+  background-color: #E0E0E0;
+  font-size:10px;
+  padding-left:8px;
+  padding-right:8px;
+}
+
 
 .non-bolded div {
   font-weight:normal;
