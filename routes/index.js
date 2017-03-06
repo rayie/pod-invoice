@@ -15,10 +15,9 @@ function procInvoice(lines){
 	var hdr = lines[0];
   hdr.tax = "0.00";
 
-	hdr.subtotal = lines.reduce(function(t,r){ return t+r.amount; },0)
-  hdr.subtotal = toUSD.format(hdr.subtotal);
+	hdr.subtotal = lines.reduce(function(t,r){ return t+r.amount; },0) * 1;
+  hdr.subtotal = toUSD.format(hdr.subtotal).replace(/\$/,"");
 	hdr.lines = lines.map(function(r){
-    r.amount *= 100;
     r.amount = toUSD.format(r.amount).replace(/\$/,"");
     r.sales_price = toUSD.format(r.sales_price).replace(/\$/,"");
     return r;

@@ -58,6 +58,10 @@ table.date td
 table.date td {
   padding: 8px;
 }
+tr.invlines td {
+  padding: 4px;
+  font-size: 14px;
+}
 
 table.terms ,
 table.inv {
@@ -65,6 +69,9 @@ table.inv {
   width: 100%;
   margin-top: 22px;
   margin-bottom: 32px;
+}
+td.money {
+  padding-left: 12px;
 }
 
 table.terms th ,

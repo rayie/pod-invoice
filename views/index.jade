@@ -67,25 +67,25 @@ block content
   table.inv
     thead 
       tr
-        th.idx Line
-        th.lt.item UPC (ITEM #) / DESCRIPTION
-        th.rt.qty QTY
-        th.rt.unit UNIT
-        th.rt.price PRICE/UNIT
-        th.rt.amount AMOUNT
+        th.idx(style="width: 20px") Line
+        th.lt.item(style="width: 280px") UPC (ITEM #) / DESCRIPTION
+        th.rt.qty(style="width: 24px") QTY
+        th.rt.unit(style="width: 20px") UNIT
+        th.rt.price(style="width: 80px") PRICE/UNIT
+        th.rt.amount(style="width: 80px") AMOUNT
       tr
         td.ct.flush(colspan=6) *ENTER ONLY 11 DIGITS OF UPC FOR RECEIVING. LEAVE OUT LAST CHECK DIGIT. PLEASE SUBMIT INVOICE COPY FOR PAYMENT PROCESSING.* 
 
 
     tbody
       each row,idx in lines
-        tr
+        tr.invlines
           td.ct.idx #{(idx+1)}
           td.lt.item #{row.memo} 
           td.rt #{row.qty}
           td.rt #{row.u_m}
           td.rt #{row.sales_price}
-          td.rt #{row.amount}
+          td.rt.money #{row.amount}
 
       tr(style="height: 20px")
         td.ct.idx 
@@ -93,7 +93,7 @@ block content
         td.rt 
         td.rt
         td.rt
-        td.rt
+        td.rt.money
 
       tr
         td(colspan=2,rowspan=3)
@@ -106,13 +106,13 @@ block content
       tr
         td(colspan=3)
           h4(style="margin: 4px 2px;") TAX
-        td.rt
+        td.rt.money
           .subtotal #{tax}
 
       tr
         td(colspan=3)
           h3(style="margin: 4px 2px;") TOTAL DUE
-        td.rt
+        td.rt.money
           .subtotal #{subtotal}
 
   .note.shade
