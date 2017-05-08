@@ -120,7 +120,7 @@ function fetchSheetData(auth,cb) {
 exports.loadFromGoogleSheets = function(){
   // Load client secrets from a local file.
   return new Promise(function(resolve,reject){
-    return fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+    return fs.readFile('.credentials/client_secret.json', function processClientSecrets(err, content) {
       if (err) {
         console.log('Error loading client secret file: ' + err);
         return reject(new Error(err));
