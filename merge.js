@@ -35,8 +35,8 @@ function f(list){
   var num = n.split(".")[0];
 
   try {
-    var pathToInv = "./data/invpdfs/"+n;
-    var pathToPOD = "./data/matches/"+n;
+    var pathToInv = "./data/generatedinvs/"+n;
+    var pathToPOD = "./data/downloadedpods/"+n;
     var a = fs.accessSync(pathToInv);
     console.log(a);
     console.log(num,pathToInv,pathToPOD);
@@ -57,9 +57,8 @@ function f(list){
 }
 
 
-fs.readdir("./data/matches",function(err,list){
+fs.readdir("./data/downloadedpods",function(err,list){
   list.reverse();
   console.log(list);
   f(list);
-
 });
