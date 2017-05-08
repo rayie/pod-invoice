@@ -6,6 +6,7 @@ const MongoDB = require("mongodb");
 const MC = MongoDB.MongoClient;
 const _ = require('lodash');
 const u2p = require('url2pdf');
+const gsheets = require('./googlesheets.js');
 
 var F = function(){
 	var self = this;
@@ -24,6 +25,63 @@ var F = function(){
       console.log(err);
     }); 
   };
+
+	this.invToDb= function(dbconn){
+		gsheets.loadInvs()
+		.then(function(rows){
+      //var rows = raw.toString().split(/\n/g);
+      var lines = rows.splice(1);
+      var colnames = rows[0];
+      var colRef = _.zipObject( colnames.map(function(r){ return r.toLowerCase().trim().replace(/ |\/|#/g,"_").replace(/_*$|\r/g,""); })
+        , _.range( 0, colnames.length )  );
+      colRef["poNumber"] = colRef["p._o."] *1;
+      delete colRef["p._o."];
+      delete colRef[""];
+      console.log(colRef);
+
+      lines = lines.filter(function(r){ 
+				if ( r.length===0) return false;	
+				//console.log(r);
+        return (r[ colRef.type ].trim()=="Invoice");
+      })
+			.map(function(r,idx){
+        var lineObject = {};
+        for(var k in colRef)
+          lineObject[ k ] =  r[colRef[k]];
+        lineObject['sourc_file_idx']=idx;
+        lineObject.qty = parseFloat( lineObject.qty,10);
+        lineObject.sales_price = parseFloat( lineObject.sales_price,10);
+				console.log(lineObject.amount);
+        lineObject.amount = parseFloat( lineObject.amount.replace(/[^0-9\.-]/g,"") ,10);
+				console.log(lineObject.amount);
+        lineObject.balance = parseFloat( lineObject.balance ,10);
+
+        return lineObject;
+      })
+      return self.dbconn.collection("winwin_inv").insertMany(lines)
+    })
+    .then(function(insertResult){
+      //console.log(insertResult);
+
+			//now check the total amount inserted
+			var pipe= [
+				{ 
+					$group: { 
+						_id:"$type", total: {$sum: "$amount" }
+					}
+				}
+			];
+			
+      return self.dbconn.collection("winwin_inv").aggregate(pipe).toArray();
+    })
+		.then(function(rr){
+			console.log("TOTAL: $" , rr[0].total);
+		})
+    .catch(function(err){ 
+			console.log(err); 
+			process.exit("Failed converting invoice lines from google sheets to winwin db")
+		});
+	};
 
   this.tsv_to_db = function(dbconn){
     read("/Volumes/DataDrive/yung-invoice/data/sample_invoice_file.tsv")
@@ -66,7 +124,6 @@ var F = function(){
   }
 
   this.all_invs_to_pdf = function(dbconn){
-
 		dbconn.collection("winwin_inv").aggregate([
 				{ $match: { rendered: {$ne: true}  } },
 				{ $group: {_id: "$num", n:{$sum:1}} },
@@ -88,14 +145,17 @@ var F = function(){
 		console.log(url);
     console.log("Saving to " + num+"_inv.pdf");
     u2p.renderPdf( url, {
-      filename: num + "_inv.pdf",
-      saveDir: "/var/www/pod-invoice/data/generatedinv"
+      fileName: num + "_inv.pdf",
+      saveDir: "/var/www/pod-invoice/data/generatedinvs"
       //saveDir: "/var/www/pod-invoice/public/invs"
     })
     .then(function(path){
-      //console.log(path);
-			return self.dbconn.collection("winwin_inv").updateOne({
-			},{$set: { rendered:true} })
+      console.log(path);
+			return self.dbconn.collection("winwin_inv")
+			.updateMany(
+				{ num: num	},
+				{$set: { rendered:true} }
+			)
     })
 		.then(function(updateResult){
 			console.log(updateResult.result);
@@ -108,7 +168,7 @@ var F = function(){
   this.fonts_to_pdf = function(num,rr){
     var url = "http://localhost:3000/fonts";
     u2p.renderPdf( url, {
-      filename: "fontsamples.pdf",
+      fileName: "fontsamples.pdf",
       saveDir: "/var/www/pod-invoice/data/generatedinv"
       //saveDir: "/var/www/pod-invoice/public/invs"
     })
@@ -121,7 +181,7 @@ var F = function(){
     var url = "http://winwinproducts.com/all/pod_1Z44V1400352015776.htm";
     url = "http://localhost:3000";
     u2p.renderPdf( url, {
-      id:"sampleOut"+Math.random().toString(), 
+      fileName:"sampleOut"+Math.random().toString(), 
       saveDir: "/var/www/pod-invoice/data/generatedinv",
     })
     .then(function(path){

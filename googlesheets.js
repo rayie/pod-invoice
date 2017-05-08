@@ -90,11 +90,39 @@ function storeToken(token) {
  * Print the names and majors of students in a sample spreadsheet:
  * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
  */
-function fetchSheetData(auth,cb) {
+function fetchInvs(auth,cb) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.values.get({
     auth: auth,
-    spreadsheetId: '10aNBsoLt8QHnUxiLXzakfzKgen1oGxtbWaf70nArzzY',
+    spreadsheetId: '1hyCc-a5svq7vvHlU73bSWe2i4bX0TAAiUgWlv9mMEGE',
+    range: 'main!A1:X',
+  }, function(err, response) {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return cb( new Error("Api returned error: ' + err") );
+    }
+    var rows = response.values;
+    return cb(null,rows);
+
+    if (rows.length == 0) {
+      console.log('No data found.');
+    } else {
+      console.log('Invoice, PODLink:', rows);
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        // Print columns A and E, which correspond to indices 0 and 4.
+        console.log('%s, %s', row[0], row[1]);
+      }
+    }
+  });
+}
+
+
+function fetchPods(auth,cb) {
+  var sheets = google.sheets('v4');
+  sheets.spreadsheets.values.get({
+    auth: auth,
+    spreadsheetId: '1hyCc-a5svq7vvHlU73bSWe2i4bX0TAAiUgWlv9mMEGE',
     range: 'main!A2:B',
   }, function(err, response) {
     if (err) {
@@ -117,7 +145,8 @@ function fetchSheetData(auth,cb) {
   });
 }
 
-exports.loadFromGoogleSheets = function(){
+
+exports.loadPods = function(){
   // Load client secrets from a local file.
   return new Promise(function(resolve,reject){
     return fs.readFile('.credentials/client_secret.json', function processClientSecrets(err, content) {
@@ -128,10 +157,32 @@ exports.loadFromGoogleSheets = function(){
       // Authorize a client with the loaded credentials, then call the
       // Google Sheets API.
       return authorize(JSON.parse(content), function(auth){ 
-        return fetchSheetData(auth, function(err,data){ 
+        return fetchPods(auth, function(err,data){ 
           if(err) return reject(err); return resolve(data) 
         }); 
       });
     });
   });
 }
+
+
+exports.loadInvs = function(){
+  // Load client secrets from a local file.
+  return new Promise(function(resolve,reject){
+    return fs.readFile('.credentials/client_secret.json', function processClientSecrets(err, content) {
+      if (err) {
+        console.log('Error loading client secret file: ' + err);
+        return reject(new Error(err));
+      }
+      // Authorize a client with the loaded credentials, then call the
+      // Google Sheets API.
+      return authorize(JSON.parse(content), function(auth){ 
+        return fetchInvs(auth, function(err,data){ 
+          if(err) return reject(err); return resolve(data) 
+        }); 
+      });
+    });
+  });
+}
+
+
