@@ -3,13 +3,17 @@ var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 const Promise = require("bluebird");
+require('dotenv').config()
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
 var SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 var TOKEN_DIR = '/var/www/pod-invoice/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
-console.log(TOKEN_PATH);
+//console.log(TOKEN_PATH);
+console.log("SHEET IDS:");
+console.log("pod:"+process.env.POD_SHEET_ID);
+console.log("inv:"+process.env.POD_SHEET_ID);
 
 
 /**
@@ -94,7 +98,7 @@ function fetchInvs(auth,cb) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.values.get({
     auth: auth,
-    spreadsheetId: '1hyCc-a5svq7vvHlU73bSWe2i4bX0TAAiUgWlv9mMEGE',
+    spreadsheetId: process.env.INV_SHEET_ID,
     range: 'main!A1:X',
   }, function(err, response) {
     if (err) {
@@ -122,7 +126,7 @@ function fetchPods(auth,cb) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.values.get({
     auth: auth,
-    spreadsheetId: '1unOzPcDJ8vuz7SYbMDRiTIGt5kR3wQtF-hhlhkWFY-s',
+    spreadsheetId: process.env.POD_SHEET_ID,
     range: 'main!A2:B',
   }, function(err, response) {
     if (err) {

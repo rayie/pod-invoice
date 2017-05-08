@@ -3,17 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nohup node ./bin/www > ./log/express.log 2> ./log/express.err &"
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "hummus": "*",
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
+    "dotenv": "^4.0.0",
     "express": "~4.14.1",
     "google-auth-library": "^0.10.0",
     "googleapis": "^17.1.0",
+    "hummus": "*",
     "jade": "~1.11.0",
     "lodash": "^4.15.0",
     "mongodb": "^2.2.24",

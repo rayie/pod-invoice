@@ -4,4 +4,5 @@ public/invs
 .credentials
 .env
 .*.swp
+log
 .DS_Store
