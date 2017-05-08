@@ -21,7 +21,8 @@
     "morgan": "~1.7.0",
     "needle": "^1.4.5",
     "serve-favicon": "~2.3.2",
-    "url2pdf": "^0.4.7"
+    "url2pdf": "^0.4.7",
+		"pdf2json":"1.1.7"
   },
   "main": "express_app.js",
   "devDependencies": {},
