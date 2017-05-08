@@ -13,12 +13,13 @@ var hummus = require('hummus');
 
 var PODS = function(){
   var self = this;
+	this.done_inv_nums = [];
   this.procLine = function(lines){
     if ( lines.length===0 ) {
       return analyze();
     }
     var line = lines.pop();
-    console.log(line);
+    //console.log(line);
     if ( typeof line === "string" ){
       var parts = line.split(/ /);
       var url = parts[1].trim();
@@ -29,7 +30,7 @@ var PODS = function(){
       var invNum = line[0].trim();
     }
 
-    console.log(url, invNum);
+    //console.log(url, invNum);
     needle.get(url, function(err, res){
       if (err){
         console.log("error fetching pod :", invNum, err);
@@ -49,27 +50,37 @@ var PODS = function(){
 			else{
 
 				//console.log(ob);
-				var invs = [];
+				var invsReferencedByPod = [];
 				ob.forEach(function(p){
 					//console.log(p);//.input.substr(1142,10));
-					invs.push( p.replace(/,/g,"") );
+					invsReferencedByPod.push( p.replace(/,/g,"").replace(/INV#/i,"") );
 				});
-				invs = _.uniq(invs);
-				if ( invs.length > 1 ) { 
-					console.log("\n****WARN - multiple numbers referenced***", invs);
+
+				invsReferencedByPod = _.uniq(invsReferencedByPod);
+
+				var extraInvNums = invsReferencedByPod.filter(function(n){
+					return n!==invNum && self.done_inv_nums.indexOf( n )==-1;
+				})
+
+				//console.log("extraInvNums", extraInvNums);
+				var thisInvNum = invsReferencedByPod.filter(function(n){
+					return n===invNum;
+				})
+
+				//push the extra invs referenced onto the stack with the same pod url
+				for(var i=0; i<extraInvNums.length; i++){
+					console.log("\n****WARN - multiple numbers referenced***", extraInvNums[i]);
+					lines.push([extraInvNums[i],url]);
 				}
 
-				if (invs[0] !== "INV#"+invNum){
-					console.log("Mismatch: " + invNum + " vs: " + invs[0]);
-					mismatchSheet.push( invNum );
-					mismatchContent.push( invs[0].substr(4) );
-					mismatchFile.push( [ invNum, invs[0].substr(4) ].join(",") );
-					var fn = "Actual-"+invs.join(",").replace(/INV#/g,"") + "-vs-Sheet-"+invNum+".pdf";
+				if (thisInvNum.length===0){
+					console.log("\n***WARN - INV stated in pod mapping file doesn't match any invs stated in the POD html data: " + invNum );
+					process.exit();
 				}
-				else {
-					console.log("MATCH: " + invNum + " === " + invs[0]);
-					var fn = invNum+".pdf";
+				else{
+					console.log("MATCH: " + invNum + " === " + thisInvNum[0]);
 				}
+				var fn = invNum+".pdf";
 			}
      
       return u2p.renderPdf(url,{fileName: fn, saveDir:"./data/downloadedpods"})
@@ -78,21 +89,20 @@ var PODS = function(){
 				try {
 					var pathToInv = "./data/generatedinvs/"+invNum+"_inv.pdf";
 					fs.accessSync(pathToInv); //throws if not found
-					console.log(invNum,pathToInv,pathToPOD);
+					//console.log(invNum,pathToInv,pathToPOD);
 				}
 				catch(err){
-					console.log(err);
-					return fs.rename(pathToPOD,"./data/missingInv/"+invNum+".pdf",function(err){
-						console.log(err);
-						return setTimeout( function() { 
-							self.procLine(lines); }, 1000 
-						);
-					});
+					console.log("invoice not found", invNum, err);
+					throw err;
 				}
 
 				return self.merge(invNum,pathToInv,pathToPOD)
 			})
 			.then(function(){
+				return self.procLine(lines);
+			})
+			.catch(function(err){
+				console.log("Got bottom level catch", err);	
 				return self.procLine(lines);
 			});
 
@@ -113,9 +123,9 @@ var PODS = function(){
 			P.mergePDFPagesToPage(page2,pathToPOD);
 			P.writePage(page1).writePage(page2).end();
 
-			return fs.rename(pathToPOD,"./data/podsDone/"+num,function(err){
+			self.done_inv_nums.push(num);
 
-
+			return fs.unlink(pathToPOD,function(err){
 				console.log(err);
 				return resolve();
 			});

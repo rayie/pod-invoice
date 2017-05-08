@@ -76,12 +76,30 @@ var F = function(){
     })
 		.then(function(rr){
 			console.log("TOTAL: $" , rr[0].total);
+			self.all_invs_to_pdf();
 		})
     .catch(function(err){ 
 			console.log(err); 
 			process.exit("Failed converting invoice lines from google sheets to winwin db")
 		});
 	};
+
+  this.all_invs_to_pdf = function(){
+		self.dbconn.collection("winwin_inv").aggregate([
+				{ $match: { rendered: {$ne: true}  } },
+				{ $group: {_id: "$num", n:{$sum:1}} },
+				{ $sort: {"_id":1} }
+		]).toArray()
+		.then(self._iterate_invs)
+    .catch(function(err){ console.log(err); })
+  }
+
+	this._iterate_invs = function(rr){
+		if ( rr.length === 0 ) return process.exit();
+		var r = rr.pop();
+		console.log(r);
+		return self._to_pdf( r._id ,rr);
+	},
 
   this.tsv_to_db = function(dbconn){
     read("/Volumes/DataDrive/yung-invoice/data/sample_invoice_file.tsv")
@@ -123,22 +141,6 @@ var F = function(){
     .catch(function(err){ console.log(err); })
   }
 
-  this.all_invs_to_pdf = function(dbconn){
-		dbconn.collection("winwin_inv").aggregate([
-				{ $match: { rendered: {$ne: true}  } },
-				{ $group: {_id: "$num", n:{$sum:1}} },
-				{ $sort: {"_id":1} }
-		]).toArray()
-		.then(self._iterate_invs)
-    .catch(function(err){ console.log(err); })
-  }
-
-	this._iterate_invs = function(rr){
-		if ( rr.length === 0 ) return process.exit();
-		var r = rr.pop();
-		console.log(r);
-		return self._to_pdf( r._id ,rr);
-	},
 
   this._to_pdf= function(num,rr){
     var url = "http://localhost:3000/inv/" + num;

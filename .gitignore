@@ -3,4 +3,5 @@ data
 public/invs
 .credentials
 .env
+.*.swp
 .DS_Store
