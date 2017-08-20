@@ -20,9 +20,15 @@
   3. check that data/generatedinvs contains invoice pdfs just generated
 
 5. Download the PODs, convert to pdf, and merge with invoice pdf
-  1. run node process_pods.js
+	1. comment out the cutoff inv num (use this only if process fails halfway)
+  2. run node process_pods.js
+		Resulting pods should be in data/done
 
-Resulting pods should be in data/done
+6. Check for missing invoices, this will read the files in done/ and compare them with the all the invoice numbers in the mongo collection
+
+	1. run node qb_export_to_db.js findMissingPods
+	
+
 
 
 

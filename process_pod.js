@@ -16,7 +16,7 @@ var PODS = function(){
 	this.done_inv_nums = [];
   this.procLine = function(lines){
     if ( lines.length===0 ) {
-      return analyze();
+      return self.analyze();
     }
     var line = lines.pop();
     //console.log(line);
@@ -30,7 +30,10 @@ var PODS = function(){
       var invNum = line[0].trim();
     }
 
-    //console.log(url, invNum);
+    console.log(url, invNum);
+		//if using cutoff after failed http to winwin, uncomment following, apply invnum cutoff
+		if ( invNum > 109801 ) return self.procLine(lines);
+
     needle.get(url, function(err, res){
       if (err){
         console.log("error fetching pod :", invNum, err);
@@ -98,6 +101,7 @@ var PODS = function(){
 
 				return self.merge(invNum,pathToInv,pathToPOD)
 			})
+			.delay(2000)
 			.then(function(){
 				return self.procLine(lines);
 			})

@@ -1,5 +1,6 @@
 const Promise = require("bluebird");
 const needle = require('needle');
+const fs = require('fs');
 const read = Promise.promisify(require("fs").readFile);
 const write = Promise.promisify(require("fs").writeFile);
 const MongoDB = require("mongodb");
@@ -25,6 +26,42 @@ var F = function(){
       console.log(err);
     }); 
   };
+
+	this.findMissingPods =function(){
+		var p = [
+			{$group: {_id: "$num"}},
+			{$sort:{_id:1}}
+		]
+		return self.dbconn.collection("winwin_inv").aggregate(p).toArray()
+		.then(function(rr){
+			var all_inv_nums = rr.map(function(r){
+				//console.log(r._id);
+				return parseInt(r._id,10);
+			})
+			all_inv_nums.sort();
+			console.log("all invs",all_inv_nums.length);
+			return self.invsDone(function(done){
+				console.log("invs done:",done.length);
+				var missing = _.difference(all_inv_nums,done)
+				console.log("missing", missing.length);
+				missing.forEach(function(m){
+					console.log(m);
+				});
+			})
+		})
+	}
+
+	this.invsDone=function(cb){
+    fs.readdir("./data/done",function(err,data){
+      console.log(err);
+      var lines = data;
+      lines.pop();
+      lines = lines.reverse().map(function(line){
+				return parseInt(line.split(/-/g)[0],10);
+			})
+			return cb(lines);
+		})
+	}
 
 	this.invToDb= function(dbconn){
 		gsheets.loadInvs()

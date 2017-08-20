@@ -99,7 +99,7 @@ function fetchInvs(auth,cb) {
   sheets.spreadsheets.values.get({
     auth: auth,
     spreadsheetId: process.env.INV_SHEET_ID,
-    range: 'main!A1:X',
+    range: 'invoicelines!A1:X',
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
@@ -127,7 +127,7 @@ function fetchPods(auth,cb) {
   sheets.spreadsheets.values.get({
     auth: auth,
     spreadsheetId: process.env.POD_SHEET_ID,
-    range: 'main!A2:B',
+    range: 'pods!A2:B',
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);

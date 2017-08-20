@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nohup node ./bin/www > ./log/express.log 2> ./log/express.err &"
+    "start": "nohup node ./bin/www > ./log/express.log 2> ./log/express.err &",
+    "starthere": "node ./bin/www "
   },
   "dependencies": {
     "bluebird": "^3.4.7",
