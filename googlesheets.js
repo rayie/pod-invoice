@@ -99,7 +99,7 @@ function fetchInvs(auth,cb) {
   sheets.spreadsheets.values.get({
     auth: auth,
     spreadsheetId: process.env.INV_SHEET_ID,
-    range: 'invoicelines!A1:X',
+    range: 'invoicelines!A1:AX',
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
@@ -168,7 +168,6 @@ exports.loadPods = function(){
     });
   });
 }
-
 
 exports.loadInvs = function(){
   // Load client secrets from a local file.

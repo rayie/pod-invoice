@@ -33,13 +33,9 @@ var F = function(){
     console.log('attached db to req');
     return next();
   }
-
 }
 
-
-
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

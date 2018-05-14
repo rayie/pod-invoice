@@ -32,7 +32,7 @@ var PODS = function(){
 
     console.log(url, invNum);
 		//if using cutoff after failed http to winwin, uncomment following, apply invnum cutoff
-		if ( invNum > 109801 ) return self.procLine(lines);
+		//if ( invNum > 109801 ) return self.procLine(lines);
 
     needle.get(url, function(err, res){
       if (err){
@@ -85,7 +85,7 @@ var PODS = function(){
 				}
 				var fn = invNum+".pdf";
 			}
-     
+      console.log("downloading from source pod ", url); 
       return u2p.renderPdf(url,{fileName: fn, saveDir:"./data/downloadedpods"})
       .then(function(pathToPOD){ 
 
@@ -151,7 +151,8 @@ var PODS = function(){
       console.log(gsheetRows);
       return self.procLine( 
         gsheetRows.map(function(r){ 
-          return [ r[0], ["http://winwinproducts.com/all/pod_",r[1],".htm"].join("") ]; 
+          return [ r[0], ["http://localhost:3001/data/podsource/pod_",r[1],".htm"].join("") ]; 
+          //return [ r[0], ["http://winwinproducts.com/all/pod_",r[1],".htm"].join("") ]; 
         })
       );
     })

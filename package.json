@@ -7,7 +7,7 @@
     "starthere": "node ./bin/www "
   },
   "dependencies": {
-    "bluebird": "^3.4.7",
+    "bluebird": "^3.5.1",
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
@@ -15,15 +15,15 @@
     "express": "~4.14.1",
     "google-auth-library": "^0.10.0",
     "googleapis": "^17.1.0",
-    "hummus": "*",
+    "hummus": "^1.0.87",
     "jade": "~1.11.0",
-    "lodash": "^4.15.0",
+    "lodash": "^4.17.10",
     "mongodb": "^2.2.24",
     "morgan": "~1.7.0",
-    "needle": "^1.4.5",
+    "needle": "^1.6.0",
+    "pdf2json": "1.1.7",
     "serve-favicon": "~2.3.2",
-    "url2pdf": "^0.4.7",
-		"pdf2json":"1.1.7"
+    "url2pdf": "^0.4.7"
   },
   "main": "express_app.js",
   "devDependencies": {},
