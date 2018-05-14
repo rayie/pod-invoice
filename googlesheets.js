@@ -13,7 +13,7 @@ var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
 //console.log(TOKEN_PATH);
 console.log("SHEET IDS:");
 console.log("pod:"+process.env.POD_SHEET_ID);
-console.log("inv:"+process.env.POD_SHEET_ID);
+console.log("inv:"+process.env.INV_SHEET_ID);
 
 
 /**
